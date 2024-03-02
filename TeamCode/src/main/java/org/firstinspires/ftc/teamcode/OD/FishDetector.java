@@ -55,12 +55,12 @@ public class FishDetector {
      * ~8000 ms on REV Control Hub     * 
      */
     public void update() {
-        List<Recognition> recognitions = processor.getFreshRecognitions();
+        List<Recognition> recognitions = processor.getRecognitions();
 
         Recognition rec;
         try {
             rec = recognitions.get(0);
-        } catch (NullPointerException e) {
+        } catch (Exception e) {
             fishCoords = new double[] {0, 0};
             return;
         }

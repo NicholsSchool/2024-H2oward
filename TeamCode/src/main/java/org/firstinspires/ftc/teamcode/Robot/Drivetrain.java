@@ -21,9 +21,9 @@ public class Drivetrain implements DrivetrainConstants {
      * @param hwMap the hardwareMap
      */
     public Drivetrain(HardwareMap hwMap) {
-        leftDrive = hwMap.get(DcMotorEx.class, "leftDrive");
-        rightDrive = hwMap.get(DcMotorEx.class, "rightDrive");
-        backDrive = hwMap.get(DcMotorEx.class, "backDrive");
+        leftDrive = hwMap.get(DcMotorEx.class, "frontLeft");
+        rightDrive = hwMap.get(DcMotorEx.class, "frontRight");
+        backDrive = hwMap.get(DcMotorEx.class, "back");
 
         leftDrive.setDirection(DcMotorEx.Direction.REVERSE); //TODO: check
         rightDrive.setDirection(DcMotorEx.Direction.REVERSE);
