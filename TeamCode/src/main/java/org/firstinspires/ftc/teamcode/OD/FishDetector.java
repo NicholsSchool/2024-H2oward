@@ -7,7 +7,6 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 
-import com.android.tools.r8.code.d;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
 
@@ -20,7 +19,7 @@ public class FishDetector {
 
     private final TfodProcessor processor;
     private final VisionPortal portal;
-    private double[] fishCoords;
+    private double[] fishCoords = new double[] {0, 0};
 
     /**
      * Initializes the TensorFlowVision
@@ -56,12 +55,12 @@ public class FishDetector {
      * ~8000 ms on REV Control Hub     * 
      */
     public void update() {
-        List<Recognition> recognitions = processor.getFreshRecognitions();
-
+        List<Recognition> recognitions = processor.getRecognitions();
+        
         Recognition rec;
         try {
             rec = recognitions.get(0);
-        } catch (NullPointerException e) {
+        } catch (Exception e) {
             fishCoords = new double[] {0, 0};
             return;
         }
