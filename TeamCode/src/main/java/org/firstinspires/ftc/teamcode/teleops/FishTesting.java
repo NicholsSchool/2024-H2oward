@@ -4,7 +4,7 @@
  import com.qualcomm.robotcore.eventloop.opmode.OpMode;
  import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
- @TeleOp(name="FISH TESTING")
+ @TeleOp(name="FISH TESTING", group = "Howard")
  public class FishTesting extends OpMode
  {
 

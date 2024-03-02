@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.Robot;
 
+import org.firstinspires.ftc.teamcode.math_utils.MotionProfile;
+import org.firstinspires.ftc.teamcode.math_utils.Vector;
+import org.firstinspires.ftc.teamcode.math_utils.VectorMotionProfile;
+
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
