@@ -6,7 +6,10 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
+
+import com.android.tools.r8.code.d;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.Range;
 
 import java.util.List;
 
@@ -17,6 +20,7 @@ public class FishDetector {
 
     private final TfodProcessor processor;
     private final VisionPortal portal;
+    private double[] fishCoords;
 
     /**
      * Initializes the TensorFlowVision
@@ -33,11 +37,12 @@ public class FishDetector {
                 .setNumDetectorThreads(4)
                 .setNumExecutorThreads(4)
                 .build();
+        processor.setClippingMargins(420, 0, 420, 0);
 
         portal = new VisionPortal.Builder()
                 .setCamera(hwMap.get(WebcamName.class, "Webcam 1"))
                 .setStreamFormat(VisionPortal.StreamFormat.YUY2)
-                .setCameraResolution(new Size(640, 480))
+                .setCameraResolution(new Size(1920, 1080))
                 .addProcessor(processor)
                 .enableLiveView(true)
                 .build();
@@ -45,18 +50,48 @@ public class FishDetector {
 
     /**
      * Gets the Prop Location using the best current Prop Recognition
-     *
-     * @return the Enum representing the Prop Location
+     * To be called once every loop ONLY.
+     * Inference takes 130-180 ms on Xiaomi Pad 6
+     * 180-230 ms on Google Pixel 6 Pro
+     * ~8000 ms on REV Control Hub     * 
      */
-    public double[] getFISH() {
+    public void update() {
         List<Recognition> recognitions = processor.getFreshRecognitions();
 
-        Recognition rec = recognitions.get(0);
+        Recognition rec;
+        try {
+            rec = recognitions.get(0);
+        } catch (NullPointerException e) {
+            fishCoords = new double[] {0, 0};
+            return;
+        }
 
-        double centerX = (rec.getLeft() + rec.getRight()) / 2;
-        double centerY = (rec.getTop() + rec.getBottom()) / 2;
+        double centerX = (rec.getLeft() + rec.getRight()) / 2 - 540;
+        double centerY = (rec.getTop() + rec.getBottom()) / 2 - 540;
 
-        return new double[]{centerX, centerY};
+        fishCoords = new double[]{centerX, centerY};
+    }
+
+    public double[] getFishCoords() {
+        return fishCoords;
+    }
+
+    public double[] getXYInput() {
+
+        double procX = fishCoords[0] / 1080;
+        double procY = fishCoords[1] / 1080;
+
+        return new double[]{procX, procY};
+
+    }
+
+    public double[] getPowerAngleInput() {
+
+        double power = Range.clip(Math.hypot(getXYInput()[0], getXYInput()[1]), 0, 1);
+        double angle = Math.atan2(getXYInput()[0], getXYInput()[1]);
+
+        return new double[]{power, angle};
+
     }
 
     /**

@@ -25,7 +25,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
       */
      @Override
      public void loop() {
-        telemetry.addData("FISH", fd.getFISH());
+        telemetry.addData("FISH", fd.getFishCoords());
      }
  
      /*

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Robot;
 
+import com.kauailabs.navx.ftc.AHRS;
 import com.qualcomm.hardware.kauailabs.NavxMicroNavigationSensor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -51,37 +52,10 @@ public class Drivetrain {
         navx.zeroYaw();
     }
 
-    /**
-     * Drives the robot field oriented
-     *
-     * @param driveInput the (x, y) input
-     * @param turn the turning input
-     * @param autoAlign whether to autoAlign
-     * @param lowGear whether to put the robot to virtual low gear
-     */
-    public void drive(Vector driveInput, double turn, boolean autoAlign, boolean lowGear) {
-        turn = turnProfile.calculate(autoAlign ? turnToAngle() : turn);
 
-        driveInput = driveProfile.calculate(driveInput.clipMagnitude(
-                (lowGear ? VIRTUAL_LOW_GEAR : VIRTUAL_HIGH_GEAR) - Math.abs(turn)));
-        double power = driveInput.magnitude();
-        double angle = driveInput.angle();
+    public void drive(double power, double angle) {
 
-        front.setPower(turn + power * Math.cos(angle + LEFT_DRIVE_OFFSET - pose.angle));
-        backRight.setPower(turn + power * Math.cos(angle + RIGHT_DRIVE_OFFSET - pose.angle));
-        backLeft.setPower(turn + power * Math.cos(angle + BACK_DRIVE_OFFSET - pose.angle));
-    }
+        //TODO: Math for drive method
 
-    /**
-     * Get Motor Velocities
-     *
-     * @return the left, right, back velocities
-     */
-    public double[] getMotorVelocities() {
-        return new double[]{
-                front.getVelocity(),
-                backRight.getVelocity(),
-                backLeft.getVelocity(),
-        };
     }
 }
