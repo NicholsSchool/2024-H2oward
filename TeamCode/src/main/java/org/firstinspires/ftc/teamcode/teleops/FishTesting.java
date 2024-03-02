@@ -1,8 +1,6 @@
- package org.firstinspires.ftc.teamcode.Robot;
+ package org.firstinspires.ftc.teamcode.teleops;
 
  import org.firstinspires.ftc.teamcode.OD.FishDetector;
-
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
  import com.qualcomm.robotcore.eventloop.opmode.OpMode;
  import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -25,9 +23,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
       */
      @Override
      public void loop() {
-         fd.update();
-         telemetry.addData("FISH_X", fd.getXYInput()[0]);
-         telemetry.addData("FISH_Y", fd.getXYInput()[1]);
+        telemetry.addData("FISH", fd.getXYInput().toString());
      }
  
      /*

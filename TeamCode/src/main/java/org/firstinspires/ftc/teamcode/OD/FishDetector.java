@@ -56,10 +56,11 @@ public class FishDetector {
      */
     public void update() {
         List<Recognition> recognitions = processor.getRecognitions();
-        
+
         Recognition rec;
         try {
             rec = recognitions.get(0);
+        } catch (Exception e) {
         } catch (Exception e) {
             fishCoords = new double[] {0, 0};
             return;
