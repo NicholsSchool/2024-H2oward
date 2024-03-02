@@ -1,61 +1,83 @@
 package org.firstinspires.ftc.teamcode.Robot;
 
-import com.kauailabs.navx.ftc.AHRS;
-import com.qualcomm.hardware.kauailabs.NavxMicroNavigationSensor;
+import org.firstinspires.ftc.teamcode.math_utils.VectorMotionProfile;
+import org.firstinspires.ftc.teamcode.math_utils.MotionProfile;
+import org.firstinspires.ftc.teamcode.math_utils.Vector;
+
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 /**
  * Robot Drivetrain
  */
-public class Drivetrain {
-    private final DcMotorEx front, backLeft, backRight;
-    private final AHRS navx;
+public class Drivetrain implements DrivetrainConstants {
+    private final DcMotorEx leftDrive, rightDrive, backDrive;
+    private final VectorMotionProfile driveProfile;
+    private final MotionProfile turnProfile;
 
     /**
-     * Initializes the Drivetrain subsystem
+     * Initializes the Drivetrain
      *
      * @param hwMap the hardwareMap
-     * @param x the initial x coordinate
-     * @param y the initial y coordinate
-     * @param initialHeading the initial robot heading in radians
-     * @param isBlue whether we are blue alliance
      */
     public Drivetrain(HardwareMap hwMap) {
-        front = hwMap.get(DcMotorEx.class, "front");
-        backRight = hwMap.get(DcMotorEx.class, "backRight");
-        backLeft = hwMap.get(DcMotorEx.class, "backLeft");
+        leftDrive = hwMap.get(DcMotorEx.class, "leftDrive");
+        rightDrive = hwMap.get(DcMotorEx.class, "rightDrive");
+        backDrive = hwMap.get(DcMotorEx.class, "backDrive");
 
-        front.setDirection(DcMotorEx.Direction.FORWARD);
-        backRight.setDirection(DcMotorEx.Direction.FORWARD);
-        backLeft.setDirection(DcMotorEx.Direction.FORWARD);
+        leftDrive.setDirection(DcMotorEx.Direction.REVERSE); //TODO: check
+        rightDrive.setDirection(DcMotorEx.Direction.REVERSE);
+        backDrive.setDirection(DcMotorEx.Direction.REVERSE);
 
-        front.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        backRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
-        backLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        leftDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+        rightDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+        backDrive.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
 
-        front.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        backRight.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        backLeft.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        leftDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        rightDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        backDrive.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
 
-        front.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        backRight.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        backLeft.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        leftDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        rightDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        backDrive.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
-        //TODO: pid if needed
-        // front.setVelocityPIDFCoefficients(DRIVE_P, DRIVE_I, 0.0, 0.0);
-        // backRight.setVelocityPIDFCoefficients(DRIVE_P, DRIVE_I, 0.0, 0.0);
-        // backLeft.setVelocityPIDFCoefficients(DRIVE_P, DRIVE_I, 0.0, 0.0);
+        leftDrive.setVelocityPIDFCoefficients(DRIVE_P, DRIVE_I, 0.0, 0.0);
+        rightDrive.setVelocityPIDFCoefficients(DRIVE_P, DRIVE_I, 0.0, 0.0);
+        backDrive.setVelocityPIDFCoefficients(DRIVE_P, DRIVE_I, 0.0, 0.0);
 
-        navx = AHRS.getInstance(hwMap.get(NavxMicroNavigationSensor.class,
-                "navx"), AHRS.DeviceDataType.kProcessedData);
-        navx.zeroYaw();
+        driveProfile = new VectorMotionProfile(DRIVE_PROFILE_SPEED);
+        turnProfile = new MotionProfile(TURN_PROFILE_SPEED, TURN_PROFILE_MAX);
     }
 
+    /**
+     * Drives the robot field oriented
+     *
+     * @param driveInput the (x, y) input
+     * @param turn the turning input
+     */
+    public void drive(Vector driveInput, double turn) {
+        turn = turnProfile.calculate(turn);
 
-    public void drive(double power, double angle) {
+        driveInput = driveProfile.calculate(
+                driveInput.clipMagnitude(MAX_SPEED - Math.abs(turn)));
+        double power = driveInput.magnitude();
+        double angle = driveInput.angle();
 
-        //TODO: Math for drive method
+        leftDrive.setPower(turn + power * Math.cos(angle + LEFT_DRIVE_OFFSET - CAMERA_OFFSET));
+        rightDrive.setPower(turn + power * Math.cos(angle + RIGHT_DRIVE_OFFSET - CAMERA_OFFSET));
+        backDrive.setPower(turn + power * Math.cos(angle + BACK_DRIVE_OFFSET - CAMERA_OFFSET));
+    }
 
+    /**
+     * Get Motor Velocities
+     *
+     * @return the left, right, back velocities
+     */
+    public double[] getMotorVelocities() {
+        return new double[]{
+                leftDrive.getVelocity(),
+                rightDrive.getVelocity(),
+                backDrive.getVelocity(),
+        };
     }
 }
