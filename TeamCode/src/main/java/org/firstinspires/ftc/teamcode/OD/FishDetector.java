@@ -66,7 +66,7 @@ public class FishDetector {
         }
 
         double centerX = (rec.getLeft() + rec.getRight()) / 2 - 540;
-        double centerY = (rec.getTop() + rec.getBottom()) / 2 - 540;
+        double centerY = (rec.getTop() + rec.getBottom()) / 2 + 540;
 
         fishCoords = new double[]{centerX, centerY};
     }
