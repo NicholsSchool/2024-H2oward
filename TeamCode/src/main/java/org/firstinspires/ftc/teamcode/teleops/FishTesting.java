@@ -23,7 +23,7 @@
       */
      @Override
      public void loop() {
-        telemetry.addData("FISH", fd.getXYInput().toString());
+        telemetry.addData("FISH", fd.getXYInput());
      }
  
      /*
@@ -31,7 +31,6 @@
       */
      @Override
      public void stop() {
+         fd.quit();
      }
- 
  }
- 

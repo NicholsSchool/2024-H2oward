@@ -4,6 +4,7 @@ import android.util.Size;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.teamcode.math_utils.Point;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 
@@ -19,7 +20,7 @@ public class FishDetector {
 
     private final TfodProcessor processor;
     private final VisionPortal portal;
-    private double[] fishCoords = new double[] {0, 0};
+    private Point fishCoords = new Point(0.0, 0.0);
 
     /**
      * Initializes the TensorFlowVision
@@ -60,43 +61,34 @@ public class FishDetector {
         Recognition rec;
         try {
             rec = recognitions.get(0);
-        } catch (Exception e) {
-            fishCoords = new double[] {0, 0};
-            return;
+
+            double centerX = (rec.getLeft() + rec.getRight()) / 2 - 540;
+            double centerY = (rec.getTop() + rec.getBottom()) / 2 + 540;
+
+            fishCoords = new Point(centerX, centerY);
+
         }
-
-        double centerX = (rec.getLeft() + rec.getRight()) / 2 - 540;
-        double centerY = (rec.getTop() + rec.getBottom()) / 2 + 540;
-
-        fishCoords = new double[]{centerX, centerY};
+        catch (Exception e) {
+            fishCoords = new Point(0.0, 0.0);
+        }
     }
 
-    public double[] getFishCoords() {
+    public Point getFishCoords() {
         return fishCoords;
     }
 
-    public double[] getXYInput() {
+    public Point getXYInput() {
 
-        double procX = fishCoords[0] / 1080;
-        double procY = fishCoords[1] / 1080;
+        double procX = fishCoords.x / 1080;
+        double procY = fishCoords.y / 1080;
 
-        return new double[]{procX, procY};
-
-    }
-
-    public double[] getPowerAngleInput() {
-
-        double power = Range.clip(Math.hypot(getXYInput()[0], getXYInput()[1]), 0, 1);
-        double angle = Math.atan2(getXYInput()[0], getXYInput()[1]);
-
-        return new double[]{power, angle};
-
+        return new Point(procX, procY);
     }
 
     /**
      * Closes the Vision Portal
      */
-    public void close() {
+    public void quit() {
         portal.close();
     }
 }
