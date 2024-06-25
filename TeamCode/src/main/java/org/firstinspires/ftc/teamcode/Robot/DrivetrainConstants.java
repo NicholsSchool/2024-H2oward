@@ -7,7 +7,7 @@ public interface DrivetrainConstants {
     //TODO: tune everything
 
     /** The Maximum Speed of the Driving Profile */
-    double DRIVE_PROFILE_SPEED = 0.25;
+    double DRIVE_PROFILE_SPEED = 0.50;
 
     /** The Maximum Speed of the Turning Profile */
     double TURN_PROFILE_SPEED = 1.0;
@@ -16,7 +16,7 @@ public interface DrivetrainConstants {
     double TURN_PROFILE_MAX = 0.25;
 
     /** The maximum drive input */
-    double MAX_SPEED = 0.5;
+    double MAX_SPEED = 0.75;
 
     /** Left Drive Wheel Angle Offset (30 degrees) */
     double LEFT_DRIVE_OFFSET = Math.PI / 6.0;
@@ -27,7 +27,7 @@ public interface DrivetrainConstants {
     /** Back Drive Wheel Angle Offset (270 degrees) */
     double BACK_DRIVE_OFFSET = 1.5 * Math.PI;
 
-    double CAMERA_OFFSET = Math.PI;
+    double CAMERA_OFFSET = 0;
 
     /** Drive Motor Proportional Gain */
     double DRIVE_P = 16.0;
