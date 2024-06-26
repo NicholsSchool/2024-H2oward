@@ -24,11 +24,9 @@
       */
      @Override
      public void loop() {
-         Point fishInput = fd.getXYInput();
-         telemetry.addData("FISH", fd.getXYInput());
-         double procInputX = (fishInput.x - 540)/540;
-         double procInputY = (-fishInput.y + 540)/540;
-         telemetry.addData("Calculated", procInputX + ", " + procInputY);
+         fd.update();
+         telemetry.addData("FISH", fd.getFishCoords());
+         telemetry.addData("Calculated", fd.getXYInput());
      }
  
      /*

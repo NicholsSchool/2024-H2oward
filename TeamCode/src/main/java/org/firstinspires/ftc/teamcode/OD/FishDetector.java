@@ -62,8 +62,8 @@ public class FishDetector {
         try {
             rec = recognitions.get(0);
 
-            double centerX = (rec.getLeft() + rec.getRight()) / 2 - 540;
-            double centerY = (rec.getTop() + rec.getBottom()) / 2 + 540;
+            double centerX = (rec.getLeft() + rec.getRight()) / 2;
+            double centerY = (rec.getTop() + rec.getBottom()) / 2;
 
             fishCoords = new Point(centerX, centerY);
 
@@ -79,8 +79,8 @@ public class FishDetector {
 
     public Point getXYInput() {
 
-        double procX = fishCoords.x / 1080;
-        double procY = fishCoords.y / 1080;
+        double procX = (fishCoords.x - 960)/960;
+        double procY = (-fishCoords.y + 540)/540;
 
         return new Point(procX, procY);
     }
