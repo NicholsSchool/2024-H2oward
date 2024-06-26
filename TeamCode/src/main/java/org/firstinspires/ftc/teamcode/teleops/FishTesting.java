@@ -3,6 +3,7 @@
  import org.firstinspires.ftc.teamcode.OD.FishDetector;
  import com.qualcomm.robotcore.eventloop.opmode.OpMode;
  import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+ import org.firstinspires.ftc.teamcode.math_utils.Point;
 
  @TeleOp(name="FISH TESTING", group = "Howard")
  public class FishTesting extends OpMode
@@ -23,7 +24,11 @@
       */
      @Override
      public void loop() {
-        telemetry.addData("FISH", fd.getXYInput());
+         Point fishInput = fd.getXYInput();
+         telemetry.addData("FISH", fd.getXYInput());
+         double procInputX = (fishInput.x - 540)/540;
+         double procInputY = (-fishInput.y + 540)/540;
+         telemetry.addData("Calculated", procInputX + ", " + procInputY);
      }
  
      /*
