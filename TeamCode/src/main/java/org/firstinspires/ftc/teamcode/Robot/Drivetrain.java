@@ -61,7 +61,7 @@ public class Drivetrain implements DrivetrainConstants {
         driveInput = driveProfile.calculate(
                 driveInput.clipMagnitude(MAX_SPEED - Math.abs(turn)));
         double power = driveInput.magnitude();
-        double angle = driveInput.angle();
+        double angle = driveInput.angle() + Math.PI / 2;
 
         leftDrive.setPower(turn + power * Math.cos(angle + LEFT_DRIVE_OFFSET - CAMERA_OFFSET));
         rightDrive.setPower(turn + power * Math.cos(angle + RIGHT_DRIVE_OFFSET - CAMERA_OFFSET));

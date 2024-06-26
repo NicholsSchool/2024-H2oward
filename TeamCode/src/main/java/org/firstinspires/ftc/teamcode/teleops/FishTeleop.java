@@ -31,7 +31,7 @@ public class FishTeleop extends OpMode
       fd.update();
       telemetry.addData("Fish Location", fd.getFishCoords());
       telemetry.addData("Processed Drive Vector", fd.getXYInput());
-      Vector driveVec = new Vector(fd.getXYInput().x, fd.getXYInput().y);
+      Vector driveVec = new Vector(-0.5 * fd.getXYInput().x, -0.5 * fd.getXYInput().y);
       drivetrain.drive(driveVec, 0.0);
     }
 
