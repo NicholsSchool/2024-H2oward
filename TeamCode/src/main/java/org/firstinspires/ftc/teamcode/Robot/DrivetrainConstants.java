@@ -7,7 +7,7 @@ public interface DrivetrainConstants {
     //TODO: tune everything
 
     /** The Maximum Speed of the Driving Profile */
-    double DRIVE_PROFILE_SPEED = 0.50;
+    double DRIVE_PROFILE_SPEED = 1;
 
     /** The Maximum Speed of the Turning Profile */
     double TURN_PROFILE_SPEED = 1.0;
