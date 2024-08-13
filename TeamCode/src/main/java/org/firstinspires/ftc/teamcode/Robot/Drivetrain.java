@@ -1,8 +1,12 @@
 package org.firstinspires.ftc.teamcode.Robot;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.math_utils.AngleMath;
 import org.firstinspires.ftc.teamcode.math_utils.MotionProfile;
 import org.firstinspires.ftc.teamcode.math_utils.Vector;
 import org.firstinspires.ftc.teamcode.math_utils.VectorMotionProfile;
+import org.firstinspires.ftc.teamcode.odom.OpticalSensor;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -66,6 +70,28 @@ public class Drivetrain implements DrivetrainConstants {
         leftDrive.setPower(turn + power * Math.cos(angle + LEFT_DRIVE_OFFSET - CAMERA_OFFSET));
         rightDrive.setPower(turn + power * Math.cos(angle + RIGHT_DRIVE_OFFSET - CAMERA_OFFSET));
         backDrive.setPower(turn + power * Math.cos(angle + BACK_DRIVE_OFFSET - CAMERA_OFFSET));
+    }
+
+    /**
+     * Drives the robot with Virtual Fence Enabled.
+     * @param driveInput same as drive()
+     * @param turn same as drive()
+     * @param fenceRadius Fence Radius in Meters (how far the robot can go from origin)
+     * @param od OpticalSensor instance to use for Virtual Fence
+     */
+    public void driveLimited(Vector driveInput, double turn, double fenceRadius, OpticalSensor od) {
+
+        od.update();
+        double minBlockedAngle = AngleMath.addAnglesRadians(od.getPosition().angle(), -Math.PI / 2);
+        double maxBlockedAngle = AngleMath.addAnglesRadians(od.getPosition().angle(), Math.PI / 2);
+        boolean canDrive = od.getPosition().magnitude() < fenceRadius && driveInput.angle() < minBlockedAngle && driveInput.angle() > maxBlockedAngle;
+
+        if (canDrive) {
+            drive(driveInput, turn);
+        } else {
+            drive(new Vector(0, 0), 0);
+        }
+
     }
 
     /**
