@@ -1,18 +1,22 @@
 package org.firstinspires.ftc.teamcode.teleops;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.OD.FishDetector;
 import org.firstinspires.ftc.teamcode.Robot.Drivetrain;
 import org.firstinspires.ftc.teamcode.math_utils.Point;
 import org.firstinspires.ftc.teamcode.math_utils.Vector;
+import org.firstinspires.ftc.teamcode.odom.OpticalSensor;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name="FISH DRIVE", group = "Howard")
+@TeleOp(name="Fish Auto 1m Fence", group = "Howard")
 public class FishTeleop extends OpMode
 {
    FishDetector fd;
    Drivetrain drivetrain;
+   OpticalSensor od;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -20,6 +24,7 @@ public class FishTeleop extends OpMode
     @Override
     public void init() {
        fd = new FishDetector(hardwareMap);
+       od = new OpticalSensor("otos", hardwareMap, DistanceUnit.METER, AngleUnit.RADIANS);
        drivetrain = new Drivetrain(hardwareMap);
     }
  
@@ -29,10 +34,9 @@ public class FishTeleop extends OpMode
     @Override
     public void loop() {
       fd.update();
-      telemetry.addData("Fish Location", fd.getFishCoords());
-      telemetry.addData("Processed Drive Vector", fd.getXYInput());
-      Vector driveVec = new Vector(-0.5 * fd.getXYInput().x, -0.5 * fd.getXYInput().y);
-      drivetrain.drive(driveVec, 0.0);
+      //od.update is called in driveLimited.
+      Vector driveVec = new Vector(0.5 * fd.getXYInput().x, 0.5 * fd.getXYInput().y);
+      drivetrain.driveLimited(driveVec, 0.0, 1.0, od);
     }
 
     /*

@@ -26,10 +26,10 @@ public class OpticalSensor {
         otos = hwMap.get(SparkFunOTOS.class, deviceName);
 
         otos.begin();
+        otos.resetTracking();
         otos.setLinearUnit(linearUnit);
         otos.setAngularUnit(angularUnit);
         otos.calibrateImu();
-        otos.resetTracking();
 
     }
 
@@ -54,13 +54,6 @@ public class OpticalSensor {
      */
     public double getHeading() {
         return pos.h;
-    }
-
-    /**
-     * Stops communicating with the I2C device.
-     */
-    public void quit() {
-        otos.close();
     }
 
 }

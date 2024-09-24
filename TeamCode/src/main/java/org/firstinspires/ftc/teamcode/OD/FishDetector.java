@@ -69,7 +69,7 @@ public class FishDetector {
 
         }
         catch (Exception e) {
-            fishCoords = new Point(0.0, 0.0);
+            fishCoords = new Point(960.0, 540.0);
         }
     }
 

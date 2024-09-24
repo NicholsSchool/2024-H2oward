@@ -37,4 +37,8 @@ public class AngleMath {
         return sum;
     }
 
+    public static boolean driveAngleCheck(Vector driveVector, Vector positionVector){
+        return positionVector.x * driveVector.x + positionVector.y * driveVector.y > 0;
+    }
+
 }

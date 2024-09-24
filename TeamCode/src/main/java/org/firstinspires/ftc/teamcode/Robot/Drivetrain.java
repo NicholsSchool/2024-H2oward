@@ -18,6 +18,7 @@ public class Drivetrain implements DrivetrainConstants {
     private final DcMotorEx leftDrive, rightDrive, backDrive;
     private final VectorMotionProfile driveProfile;
     private final MotionProfile turnProfile;
+    private boolean canDrive;
 
     /**
      * Initializes the Drivetrain
@@ -82,15 +83,21 @@ public class Drivetrain implements DrivetrainConstants {
     public void driveLimited(Vector driveInput, double turn, double fenceRadius, OpticalSensor od) {
 
         od.update();
-        double minBlockedAngle = AngleMath.addAnglesRadians(od.getPosition().angle(), -Math.PI / 2);
-        double maxBlockedAngle = AngleMath.addAnglesRadians(od.getPosition().angle(), Math.PI / 2);
-        boolean canDrive = od.getPosition().magnitude() < fenceRadius && driveInput.angle() < minBlockedAngle && driveInput.angle() > maxBlockedAngle;
+        boolean isOverFence = od.getPosition().magnitude() > fenceRadius;
+        boolean isDrivingBlocked = AngleMath.driveAngleCheck(driveInput, od.getPosition());
+        canDrive = !(isOverFence && isDrivingBlocked);
 
-        if (canDrive) {
-            drive(driveInput, turn);
+        if (canDrive || (od.getPosition().magnitude() == 0.0)) {
+            drive(new Vector(-driveInput.x, -driveInput.y), turn);
         } else {
             drive(new Vector(0, 0), 0);
         }
+
+    }
+
+    public boolean getCanDrive() {
+
+	return canDrive;
 
     }
 
