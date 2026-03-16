@@ -6,7 +6,7 @@ import org.firstinspires.ftc.teamcode.math_utils.AngleMath;
 import org.firstinspires.ftc.teamcode.math_utils.MotionProfile;
 import org.firstinspires.ftc.teamcode.math_utils.Vector;
 import org.firstinspires.ftc.teamcode.math_utils.VectorMotionProfile;
-import org.firstinspires.ftc.teamcode.odom.OpticalSensor;
+import org.firstinspires.ftc.teamcode.math_utils.Pose2D;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -78,16 +78,15 @@ public class Drivetrain implements DrivetrainConstants {
      * @param driveInput same as drive()
      * @param turn same as drive()
      * @param fenceRadius Fence Radius in Meters (how far the robot can go from origin)
-     * @param od OpticalSensor instance to use for Virtual Fence
+     * @param pose Pose data from Odometry
      */
-    public void driveLimited(Vector driveInput, double turn, double fenceRadius, OpticalSensor od) {
+    public void driveLimited(Vector driveInput, double turn, double fenceRadius, Vector pose) {
 
-        od.update();
-        boolean isOverFence = od.getPosition().magnitude() > fenceRadius;
-        boolean isDrivingBlocked = AngleMath.driveAngleCheck(driveInput, od.getPosition());
+        boolean isOverFence = pose.magnitude() > fenceRadius;
+        boolean isDrivingBlocked = AngleMath.driveAngleCheck(driveInput, pose);
         canDrive = !(isOverFence && isDrivingBlocked);
 
-        if (canDrive || (od.getPosition().magnitude() == 0.0)) {
+        if (canDrive || (pose.magnitude()) == 0.0) {
             drive(new Vector(-driveInput.x, -driveInput.y), turn);
         } else {
             drive(new Vector(0, 0), 0);

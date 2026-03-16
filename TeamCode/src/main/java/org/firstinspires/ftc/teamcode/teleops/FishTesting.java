@@ -12,6 +12,7 @@
 
  import org.firstinspires.ftc.teamcode.Robot.Drivetrain;
  import org.firstinspires.ftc.teamcode.controller.Controller;
+ import org.firstinspires.ftc.teamcode.gobilda_pinpoint.GoBildaPinpointDriver;
  import org.firstinspires.ftc.teamcode.math_utils.Vector;
  import org.firstinspires.ftc.teamcode.odom.OpticalSensor;
 
@@ -20,12 +21,11 @@
  {
 
     FishDetector fd;
-    OpticalSensor od;
-
     FtcDashboard dashboard;
 
      Controller controller;
      Drivetrain drivetrain;
+     GoBildaPinpointDriver pinpoint;
 
      /*
       * Code to run ONCE when the driver hits INIT
@@ -35,10 +35,13 @@
          dashboard = FtcDashboard.getInstance();
          Telemetry dashboardTelemetry = dashboard.getTelemetry();
          fd  = new FishDetector(hardwareMap);
-         od = new OpticalSensor("otos", hardwareMap, DistanceUnit.METER, AngleUnit.RADIANS);
-
          drivetrain = new Drivetrain(hardwareMap);
          controller = new Controller(gamepad1);
+
+         pinpoint = hardwareMap.get(GoBildaPinpointDriver.class, "pinpoint");
+         pinpoint.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
+         pinpoint.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
+         pinpoint.setOffsets(0, 0, DistanceUnit.METER);
 
      }
   
@@ -48,15 +51,15 @@
      @Override
      public void loop() {
          fd.update();
-         od.update();
+         pinpoint.update();
          telemetry.addData("FISH", fd.getFishCoords());
          telemetry.addData("Calculated", fd.getXYInput());
-         telemetry.addData("Odometry Coords", od.getPosition().x + "," + od.getPosition().y);
-         telemetry.addData("Odometry Angle", od.getPosition().angle());
+         telemetry.addData("Odometry Coords", pinpoint.getPosX(DistanceUnit.METER) + "," + pinpoint.getPosY(DistanceUnit.METER));
+         telemetry.addData("Odometry Angle", pinpoint.getHeading(AngleUnit.DEGREES));
 
          controller.update();
          Vector drive = controller.leftStick.toVector();
-         drivetrain.driveLimited(drive, controller.rightStick.x.value() * 0.5, 2, od);
+         drivetrain.driveLimited(drive, controller.rightStick.x.value() * 0.5, 2, pinpoint.getPosition() );
 
 
 
@@ -68,16 +71,16 @@
 
                  //odom coords
                  .setFill("green")
-                 .fillCircle(od.getPosition().x, od.getPosition().y, 0.5)
+                 .fillCircle(pinpoint.getPosX(DistanceUnit.INCH), pinpoint.getPosY(DistanceUnit.INCH), 0.5)
 
                  //odom label
                  .setFill("white")
-                 .fillText("Odometry Position", od.getPosition().x + 1, od.getPosition().y + 1, "Sans Serif", 0)
+                 .fillText("Odometry Position", pinpoint.getPosX(DistanceUnit.INCH) + 1, pinpoint.getPosY(DistanceUnit.INCH) + 1, "Sans Serif", 0)
 
                  //odom line
                  .setStroke("white")
                  .setStrokeWidth(2)
-                 .strokeLine(0, 0, od.getPosition().x, od.getPosition().y);
+                 .strokeLine(0, 0, pinpoint.getPosX(DistanceUnit.INCH), pinpoint.getPosY(DistanceUnit.INCH));
 
          dashboard.sendTelemetryPacket(canvasPacket);
      }
