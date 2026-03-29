@@ -37,8 +37,8 @@ public class AngleMath {
         return sum;
     }
 
-    public static boolean driveAngleCheck(Vector driveVector, Vector positionVector){
-        return positionVector.x * driveVector.x + positionVector.y * driveVector.y > 0;
+    public static boolean driveAngleCheck(double driveAngle, double positionAngle){
+        return Math.cos(Math.abs(addAnglesRadians(driveAngle, -positionAngle))) > -0.25;
     }
 
 }

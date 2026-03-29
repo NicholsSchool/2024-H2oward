@@ -80,16 +80,18 @@ public class Drivetrain implements DrivetrainConstants {
      * @param fenceRadius Fence Radius in Meters (how far the robot can go from origin)
      * @param pose Pose data from Odometry
      */
-    public void driveLimited(Vector driveInput, double turn, double fenceRadius, Vector pose) {
+    public boolean driveLimited(Vector driveInput, double turn, double fenceRadius, Vector pose) {
 
         boolean isOverFence = pose.magnitude() > fenceRadius;
-        boolean isDrivingBlocked = AngleMath.driveAngleCheck(driveInput, pose);
+        boolean isDrivingBlocked = AngleMath.driveAngleCheck(driveInput.angle() + Math.PI / 2, pose.angle());
         canDrive = !(isOverFence && isDrivingBlocked);
 
         if (canDrive || (pose.magnitude()) == 0.0) {
             drive(new Vector(-driveInput.x, -driveInput.y), turn);
+            return true;
         } else {
             drive(new Vector(0, 0), 0);
+            return false;
         }
 
     }

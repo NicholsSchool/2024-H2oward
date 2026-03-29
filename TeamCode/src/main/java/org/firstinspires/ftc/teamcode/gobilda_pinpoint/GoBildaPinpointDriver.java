@@ -643,7 +643,7 @@ public class GoBildaPinpointDriver extends I2cDeviceSynchDevice<I2cDeviceSynchSi
      * normalized heading is wrapped from -180°, to 180°.
      */
     public double getHeading(AngleUnit angleUnit){
-        return angleUnit.fromRadians((hOrientation + Math.PI) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI) - Math.PI;
+        return angleUnit.fromRadians((hOrientation + Math.PI) % (2 * Math.PI));
     }
 
     /**
@@ -719,15 +719,9 @@ public class GoBildaPinpointDriver extends I2cDeviceSynchDevice<I2cDeviceSynchSi
     /**`
      * @return a Vector containing the estimated position of the robot
      */
-    public Vector getPosition(){
+    public Vector getPosition(DistanceUnit distanceUnit){
 
-        return new Vector(xPosition / 1000, yPosition / 1000);
-//        return new Pose2D(DistanceUnit.MM,
-//                xPosition,
-//                yPosition,
-//                AngleUnit.RADIANS,
-//                //this wraps the hOrientation variable from -180° to +180°
-//                ((hOrientation + Math.PI) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI) - Math.PI);
+        return new Vector(getPosX(distanceUnit), getPosY(distanceUnit));
     }
 
 
